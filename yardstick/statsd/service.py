@@ -16,16 +16,19 @@
 from oslo.config import cfg
 from yardstick.openstack.common import log as logging
 from yardstick import udp
+from yardstick.statsd import protocol
 
 
 LOG = logging.getLogger(__name__)
 
 
 class Service(udp.Service):
-    def __init__(self, threads=1000):
+    def __init__(self, **kwargs):
         super(Service, self).__init__(host=cfg.CONF['service:statsd'].host,
                                       port=cfg.CONF['service:statsd'].port,
-                                      threads=threads)
+                                      **kwargs)
+
+        self.protocol = protocol.Protocol()
 
     def start(self):
         super(Service, self).start()
@@ -36,4 +39,6 @@ class Service(udp.Service):
         while True:
             payload, address = self.sock.recvfrom(512)
 
-            print payload
+            metrics = self.protocol.unpack(payload)
+
+            print metrics

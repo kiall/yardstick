@@ -22,10 +22,10 @@ LOG = logging.getLogger(__name__)
 
 
 class Service(tcp.Service):
-    def __init__(self, threads=1000):
+    def __init__(self, **kwargs):
         super(Service, self).__init__(host=self.host,
                                       port=self.port,
-                                      threads=threads)
+                                      **kwargs)
 
     @property
     def host(self):
@@ -45,6 +45,11 @@ class Service(tcp.Service):
 
 
 class PickleService(Service):
+    def __init__(self, **kwargs):
+        super(PickleService, self).__init__(**kwargs)
+
+        self.protocol = protocol.PickleProtocol()
+
     @property
     def port(self):
         return cfg.CONF['service:graphite'].pickle_port
@@ -57,6 +62,11 @@ class PickleService(Service):
 
 
 class TextService(Service):
+    def __init__(self, **kwargs):
+        super(TextService, self).__init__(**kwargs)
+
+        self.protocol = protocol.TextProtocol()
+
     @property
     def port(self):
         return cfg.CONF['service:graphite'].text_port
