@@ -38,6 +38,6 @@ class TextProtocol(Protocol):
 
         for line in lines:
             name, timestamp, value = line.split(' ', 3)
-            metrics.append((name, (timestamp, value)))
+            metrics.append((name, (int(timestamp), float(value))))
 
         return metrics
