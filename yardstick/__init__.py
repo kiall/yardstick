@@ -18,15 +18,14 @@ import socket
 from oslo.config import cfg
 
 cfg.CONF.register_opts([
+    cfg.StrOpt('config-file', default='yardstick'),
+    cfg.StrOpt('host', default=socket.gethostname(),
+               help='Name of this node'),
     cfg.StrOpt('pybasedir',
                default=os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                     '../')),
                help='Directory where the yardstick python module is '
                     'installed'),
-    cfg.StrOpt('host', default=socket.gethostname(),
-               help='Name of this node'),
     cfg.StrOpt('state-path', default='$pybasedir',
                help='Top-level directory for maintaining yardstick\'s state'),
-    cfg.IntOpt('workers', default=None,
-               help='Number of worker processes to spawn'),
 ])

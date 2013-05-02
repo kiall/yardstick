@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Copyright 2013 Hewlett-Packard Development Company, L.P.
 #
 # Author: Kiall Mac Innes <kiall@hp.com>
@@ -14,22 +13,17 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import sys
-import eventlet
 from oslo.config import cfg
-from yardstick.openstack.common import log as logging
-from yardstick.openstack.common import service
-from yardstick.graphite import service as graphite_service
-from yardstick.statsd import service as statsd_service
-from yardstick import tcp
 
+cfg.CONF.register_group(cfg.OptGroup(
+    name='service:graphite', title="Configuration for Graphite Service"
+))
 
-logging.setup('yardstick')
-
-eventlet.monkey_patch()
-
-launcher = service.ServiceLauncher()
-launcher.launch_service(graphite_service.PickleService())
-launcher.launch_service(graphite_service.TextService())
-launcher.launch_service(statsd_service.Service())
-launcher.wait()
+cfg.CONF.register_opts([
+    cfg.StrOpt('host', default='0.0.0.0',
+               help='Host'),
+    cfg.IntOpt('text-port', default=2003,
+               help='Text Protocol Port Number'),
+    cfg.IntOpt('pickle-port', default=2004,
+               help='Pickle Protocol Port Number'),
+], group='service:graphite')

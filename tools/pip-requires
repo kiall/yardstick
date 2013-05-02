@@ -1,3 +1,6 @@
 eventlet
 stevedore
 cliff
+
+iso8601  # oslo timeutils
+kombu    # oslo log -> notifier -> rpc (Really? I mean, REALLY?)

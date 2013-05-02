@@ -14,16 +14,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from oslo.config import cfg
+import eventlet
 from yardstick.openstack.common import log as logging
 from yardstick.openstack.common import service
 
 LOG = logging.getLogger(__name__)
 
 
-class UDPService(service.Service):
-    def __init__(self, threads=1000):
-        super(UDPService, self).__init__(threads)
+class Service(service.Service):
+    def __init__(self, host, port, threads=1000):
+        super(Service, self).__init__(threads)
 
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.sock.bind((ip, port))
+        self.sock = eventlet.listen((host, port))
+
