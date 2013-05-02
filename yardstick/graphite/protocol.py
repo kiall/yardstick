@@ -33,7 +33,11 @@ class PickleProtocol(Protocol):
 
 class TextProtocol(Protocol):
     def unpack(self, payload):
-        metrics = payload.splitlines()
-        metrics = [(m[0], (m[2], m[1]) for m in metrics]
+        lines = payload.splitlines()
+        metrics = []
+
+        for line in lines:
+            name, timestamp, value = line.split(' ', 3)
+            metrics.append((name, (timestamp, value)))
 
         return metrics

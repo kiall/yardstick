@@ -16,6 +16,7 @@
 from oslo.config import cfg
 from yardstick.openstack.common import log as logging
 from yardstick import tcp
+from yardstick.graphite import protocol
 
 
 LOG = logging.getLogger(__name__)
@@ -57,7 +58,18 @@ class PickleService(Service):
     def _consume(self):
         while True:
             connection, address = self.sock.accept()
-            payload = connection.recv(65535)
+            payload = ""
+
+            while True:
+                data = connection.recv(65535)
+                if data == "":
+                   break
+                payload += data
+
+            metrics = self.protocol.unpack(payload)
+
+            print metrics
+
             connection.close()
 
 
@@ -74,5 +86,16 @@ class TextService(Service):
     def _consume(self):
         while True:
             connection, address = self.sock.accept()
-            payload = connection.recv(65535)
+            payload = ""
+
+            while True:
+                data = connection.recv(65535)
+                if data == "":
+                   break
+                payload += data
+
+            metrics = self.protocol.unpack(payload)
+
+            print metrics
+
             connection.close()
